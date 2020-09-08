@@ -110,7 +110,7 @@ let UserResolver = class UserResolver {
                 yield em.persistAndFlush(user);
             }
             catch (error) {
-                console.log("Username already exists", error.message);
+                console.log("Database error", error.message, error);
                 if (error.code === "23505") {
                     return {
                         errors: [
@@ -122,6 +122,8 @@ let UserResolver = class UserResolver {
                     };
                 }
             }
+            console.log("----- USER ID -----");
+            console.log(user.id);
             req.session.userId = user.id;
             return { user };
         });
@@ -172,7 +174,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "users", null);
 __decorate([
-    type_graphql_1.Mutation(() => User_1.User),
+    type_graphql_1.Mutation(() => UserResponse),
     __param(0, type_graphql_1.Ctx()),
     __param(1, type_graphql_1.Arg("options")),
     __metadata("design:type", Function),

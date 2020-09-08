@@ -53,7 +53,7 @@ export class UserResolver {
     return em.find(User, {});
   }
 
-  @Mutation(() => User)
+  @Mutation(() => UserResponse)
   async register(
     @Ctx() { em, req }: MyContext,
     @Arg("options") options: UserNamePasswordInput
@@ -89,7 +89,7 @@ export class UserResolver {
     try {
       await em.persistAndFlush(user);
     } catch (error) {
-      console.log("Username already exists", error.message);
+      console.log("Database error", error.message, error);
       if (error.code === "23505") {
         return {
           errors: [
@@ -101,6 +101,10 @@ export class UserResolver {
         };
       }
     }
+
+    console.log("----- USER ID -----");
+    console.log(user.id);
+
     req.session.userId = user.id;
     return { user };
   }
